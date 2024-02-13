@@ -1,8 +1,0 @@
-{
-	"rewrites": [
-		{
-			"source": "/(.*)",
-			"destination": "/event_aquarium/$1"
-		}
-	]
-}
