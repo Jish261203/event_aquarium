@@ -11,11 +11,11 @@ export const headerLinks = [
 		label: "My Profile",
 		route: "/profile",
 	},
-	
-	{
-		label: "Dashboard",
-		route: "/admin/dashboard",
-	},
+
+	// {
+	// 	label: "Dashboard",
+	// 	route: "/admin/dashboard",
+	// },
 ];
 
 export const eventDefaultValues = {

@@ -22,9 +22,12 @@ import { FileUploader } from "./FileUploader";
 import { useState } from "react";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
+import { useUploadThing } from "@/lib/uploadthing";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useRouter } from "next/navigation";
+import { createEvent } from "@/lib/actions/event.actions";
 
 type EventFormProps = {
 	userId: string;
@@ -35,16 +38,45 @@ const EventForm = ({ userId, type }: EventFormProps) => {
 	const [file, setFile] = useState<File[]>([]);
 	const initialValues = eventDefaultValues;
 
+	const { startUpload } = useUploadThing("imageUploader");
+
+	const router = useRouter();
+
 	const form = useForm<z.infer<typeof eventFormSchema>>({
 		resolver: zodResolver(eventFormSchema),
 		defaultValues: initialValues,
 	});
 
 	// 2. Define a submit handler.
-	function onSubmit(values: z.infer<typeof eventFormSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values);
+	async function onSubmit(values: z.infer<typeof eventFormSchema>) {
+		let uploadedImageUrl = values.imageUrl;
+
+		if (file.length > 0) {
+			const uploadedImages = await startUpload(file);
+
+			if (!uploadedImages) {
+				return;
+			}
+
+			uploadedImageUrl = uploadedImages[0].url;
+		}
+
+		if (type === "Create") {
+			try {
+				const newEvent = await createEvent({
+					event: { ...values, imageUrl: uploadedImageUrl },
+					userId,
+					path: "/profile",
+				});
+
+				if (newEvent) {
+					form.reset();
+					router.push(`/events/${newEvent._id}`);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		}
 	}
 	return (
 		<Form {...form}>
@@ -247,6 +279,8 @@ const EventForm = ({ userId, type }: EventFormProps) => {
 																Free Ticket
 															</label>
 															<Checkbox
+																onCheckedChange={field.onChange}
+																checked={field.value}
 																id="isFree"
 																className="mr-2 h-5 w-5 border-2 border-primary-500"
 															/>

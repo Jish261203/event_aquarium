@@ -1,17 +1,18 @@
-import { SignedIn, SignedOut, UserButton} from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import NavItems from "./NavItems";
 import MobileNav from "./MobileNav";
 
-
-
 const Header = () => {
-
-
 	return (
-		<header className="w-full border-b">
+		<header
+			className="w-full border-b"
+			style={{
+				background:
+					"linear-gradient(135deg, #aad6ec, #151269, #0f1056, #113065)",
+			}}>
 			<div className="wrapper flex items-center justify-between">
 				<Link href="/" className="w-36">
 					<Image
@@ -34,7 +35,7 @@ const Header = () => {
 					<SignedOut>
 						<Button
 							asChild
-							className="rounded-full bg-blue-500 text-white border-blue-500 hover:bg-white hover:text-blue-500 transition-colors duration-300"
+							className="relative rounded-full scale-80 bg-gradient-to-r from-purple-800 via-blue-900 to-gray-900 text-white border-blue-500 transition-all duration-300 hover:bg-gray-800 hover:text-pink-500 hover:scale-150"
 							size="lg">
 							<Link href="/sign-in">Login</Link>
 						</Button>
