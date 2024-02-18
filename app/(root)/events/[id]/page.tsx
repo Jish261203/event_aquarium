@@ -2,6 +2,7 @@ import { getEventById } from "@/lib/actions/event.actions";
 import { formatDateTime } from "@/lib/utils";
 import { SearchParamProps } from "@/types";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const EventDetails = async ({ params: { id } }: SearchParamProps) => {
@@ -79,9 +80,11 @@ const EventDetails = async ({ params: { id } }: SearchParamProps) => {
 					<div className="flex flex-col gap-2">
 						<p className="p-bold-20 text-grey-600">About</p>
 						<p className="p-medium-16 lg:p-regular-18">{event.description}</p>
-						<p className="p-medium-16 lg:p-regular-18 truncate text-primary-500 underline">
+						<Link
+							href={event.url}
+							className="p-medium-16 lg:p-regular-18 truncate text-primary-500 underline">
 							{event.url}
-						</p>
+						</Link>
 					</div>
 				</div>
 			</div>
