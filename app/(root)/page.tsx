@@ -27,7 +27,7 @@ export default async function Home() {
 						<Button
 							size="lg"
 							asChild
-							className="button w-full sm:w-fit bg-blue-500 text-white border-blue-500 hover:bg-white hover:text-blue-500 transition-colors duration-300">
+							className="button w-full sm:w-fit scale-80 bg-gradient-to-r from-purple-800 via-blue-900 to-gray-900 text-white border-blue-500 transition-all duration-300 hover:bg-gray-800 hover:text-pink-500 hover:scale-125">
 							<Link href="#events">Explore Now</Link>
 						</Button>
 					</div>
