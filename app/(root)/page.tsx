@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Collection from "@/components/shared/Collection";
 import { getAllEvents } from "@/lib/actions/event.actions";
+import Typewriter from "./TypeEffect";
 
 export default async function Home() {
 	const events = await getAllEvents({
@@ -12,12 +13,18 @@ export default async function Home() {
 		category: "",
 	});
 
+	const words = ["Build", "Connect!", "Celebrate!!"];
+
 	return (
 		<>
 			<section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
 				<div className="wrapper grid grid-cols-1 gap-5 md:grid-cols-2 2xl:gap-0">
 					<div className="flex flex-col justify-center gap-8">
-						<h1 className="h1-bold">Build Connect Celebrate !</h1>
+						<h1 className="text-6xl font-bold">
+							<Typewriter words={words} />
+						</h1>
+
+						
 						<h2 className="h2-bold">Your Events, Our Platform!</h2>
 						<p className="p-regular-20 md:p-regular-24">
 							Transform your events with ease on our all-in-one platform.
