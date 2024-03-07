@@ -19,7 +19,7 @@ import { eventDefaultValues } from "@/constants";
 import Dropdown from "./Dropdown";
 import { Textarea } from "@/components/ui/textarea";
 import { FileUploader } from "./FileUploader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
 import { useUploadThing } from "@/lib/uploadthing";
@@ -56,6 +56,19 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 		resolver: zodResolver(eventFormSchema),
 		defaultValues: initialValues,
 	});
+
+	useEffect(() => {
+		// Ensure end date cannot be before start date
+		if (form.watch("startDateTime") > form.watch("endDateTime")) {
+			// Set end date to start date by default
+			form.setValue("endDateTime", form.watch("startDateTime"));
+		}
+	}, [form.watch("startDateTime"), form.watch("endDateTime")]);
+
+	useEffect(() => {
+		// Update end date when start date changes
+		form.setValue("endDateTime", form.watch("startDateTime"));
+	}, [form.watch("startDateTime")]);
 
 	async function onSubmit(values: z.infer<typeof eventFormSchema>) {
 		let uploadedImageUrl = values.imageUrl;
@@ -285,8 +298,8 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 								<FormControl>
 									<div className="flex-center h-[55px] w-full overflow-hidden rounded-full bg-grey-50 px-4 py-2">
 										<Image
-											src="/assets/icons/dollar.svg"
-											alt="dollar"
+											src="/assets/icons/rupee.svg"
+											alt="rupee"
 											width={24}
 											height={24}
 											className="filter-grey"
