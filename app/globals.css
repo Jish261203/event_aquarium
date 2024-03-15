@@ -228,6 +228,7 @@ body {
 	.toggle-switch {
 		@apply bg-gray-300 !important;
 	}
+
 }
 
 /* ========================================== CLERK STYLES */
@@ -274,4 +275,6 @@ body {
 .react-datepicker__time-list-item--selected {
 	background-color: #624cf5 !important;
 }
+
+
 

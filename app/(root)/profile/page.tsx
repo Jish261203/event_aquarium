@@ -1,6 +1,8 @@
 import Collection from "@/components/shared/Collection";
 import { Button } from "@/components/ui/button";
 import { getEventByUser } from "@/lib/actions/event.actions";
+import { getOrdersByUser } from "@/lib/actions/order.action";
+import { IOrder } from "@/lib/database/models/order.model";
 import { auth } from "@clerk/nextjs";
 import { pages } from "next/dist/build/templates/app-page";
 import Link from "next/link";
@@ -11,7 +13,13 @@ const ProfilePage = async () => {
 
 	const userId = sessionClaims?.userId as string;
 
-	const organizedEvents = await getEventByUser({userId,page:1});
+	const organizedEvents = await getEventByUser({ userId, page: 1 });
+	
+	const orders = await getOrdersByUser({ userId, page: 1 })
+	
+	const orderEvents = orders?.data.map((order: IOrder) => order.event) || []
+	
+	
 
 	return (
 		<>
@@ -28,9 +36,9 @@ const ProfilePage = async () => {
 				</div>
 			</section>
 
-			{/* <section className="wrapper my-8">
+			<section className="wrapper my-8">
 				<Collection
-					data={events?.data}
+					data={orderEvents}
 					emptyTitle="Tickets Await: You Haven't Purchased Yet!"
 					emptyStateSubtext="Explore thrilling events now - get your tickets!"
 					collectionType="My_Tickets"
@@ -39,7 +47,7 @@ const ProfilePage = async () => {
 					urlParamName="ordersPage"
 					totalPages={2}
 				/>
-			</section> */}
+			</section>
 
 			{/* Event Organized */}
 

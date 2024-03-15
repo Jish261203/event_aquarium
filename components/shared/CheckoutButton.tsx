@@ -17,7 +17,7 @@ const CheckoutButton = ({ event }: { event: IEvent }) => {
 					Sorry Tickets are no longer avaliable
 				</p>
 			) : (
-				<>
+				<>	
 					<SignedOut>
 						<Button
 							asChild
