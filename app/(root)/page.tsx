@@ -4,13 +4,19 @@ import Link from "next/link";
 import Collection from "@/components/shared/Collection";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import Typewriter from "./TypeEffect";
+import Search from "@/components/shared/Search";
+import { SearchParamProps } from "@/types";
+import CategoryFilter from "@/components/shared/CategoryFilter";
 
-export default async function Home() {
-	const events = await getAllEvents({
-		query: "",
+export default async function Home({ searchParams }: SearchParamProps) {
+	const page = Number(searchParams?.page) || 1;
+  	const searchText = (searchParams?.query as string) || '';
+  	const category = (searchParams?.category as string) || '';
+  const events = await getAllEvents({
+		query: searchText,
+		category,
+		page,
 		limit: 6,
-		page: 1,
-		category: "",
 	});
 
 	const words = ["Build", "Connect!", "Celebrate!!"];
@@ -55,7 +61,8 @@ export default async function Home() {
 					Trust By <br /> Thousands of Events{" "}
 				</h1>
 				<div className="flex w-full flex-col gap-5 md:flex-row">
-					Search CategaoriesFilter
+					<Search/> 
+					<CategoryFilter/>
 				</div>
 				<Collection
 					data={events?.data}
@@ -63,8 +70,8 @@ export default async function Home() {
 					emptyStateSubtext="Come Back Later"
 					collectionType="All_Events"
 					limit={6}
-					page={1}
-					totalPages={2}
+					page={page}
+					totalPages={events?.totalPages}
 				/>
 			</section>
 		</>

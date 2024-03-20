@@ -66,15 +66,14 @@ export const createOrder = async (order: CreateOrderParams) => {
 	}
 };
 
-export const getOrderByEvent = async ({
+export async function getOrdersByEvent({
 	searchString,
 	eventId,
-}: GetOrdersByEventParams) => {
+}: GetOrdersByEventParams) {
 	try {
 		await connectToDatabase();
 
 		if (!eventId) throw new Error("Event ID is required");
-
 		const eventObjectId = new ObjectId(eventId);
 
 		const orders = await Order.aggregate([
@@ -90,13 +89,25 @@ export const getOrderByEvent = async ({
 				$unwind: "$buyer",
 			},
 			{
+				$lookup: {
+					from: "events",
+					localField: "event",
+					foreignField: "_id",
+					as: "event",
+				},
+			},
+			{
+				$unwind: "$event",
+			},
+			{
 				$project: {
 					_id: 1,
 					totalAmount: 1,
-					createdAt: "$event.title",
+					createdAT: 1,
+					eventTitle: "$event.title",
 					eventId: "$event._id",
 					buyer: {
-						$concat: ["$buyer.firstName", "", "$buyer.lastName"],
+						$concat: ["$buyer.firstName", " ", "$buyer.lastName"],
 					},
 				},
 			},
@@ -109,11 +120,12 @@ export const getOrderByEvent = async ({
 				},
 			},
 		]);
+
 		return JSON.parse(JSON.stringify(orders));
 	} catch (error) {
 		handleError(error);
 	}
-};
+}
 
 export async function getOrdersByUser({
 	userId,
@@ -128,12 +140,12 @@ export async function getOrdersByUser({
 
 		const orders = await Order.distinct("event._id")
 			.find(conditions)
-			.sort({ createdAt: "desc" })
+			.sort({ createdAT: "desc" })
 			.skip(skipAmount)
 			.limit(limit)
 			.populate({
-				path: 'event',
-				model:Event,
+				path: "event",
+				model: Event,
 				populate: {
 					path: "organizer",
 					model: User,
