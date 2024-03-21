@@ -10,9 +10,9 @@ import CategoryFilter from "@/components/shared/CategoryFilter";
 
 export default async function Home({ searchParams }: SearchParamProps) {
 	const page = Number(searchParams?.page) || 1;
-  	const searchText = (searchParams?.query as string) || '';
-  	const category = (searchParams?.category as string) || '';
-  const events = await getAllEvents({
+	const searchText = (searchParams?.query as string) || "";
+	const category = (searchParams?.category as string) || "";
+	const events = await getAllEvents({
 		query: searchText,
 		category,
 		page,
@@ -30,7 +30,6 @@ export default async function Home({ searchParams }: SearchParamProps) {
 							<Typewriter words={words} />
 						</h1>
 
-						
 						<h2 className="h2-bold">Your Events, Our Platform!</h2>
 						<p className="p-regular-20 md:p-regular-24">
 							Transform your events with ease on our all-in-one platform.
@@ -45,7 +44,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
 						</Button>
 					</div>
 					<Image
-						src="/assets/images/hero.png"
+						src="/assets/images/event1.png"
 						alt="hero"
 						width={1000}
 						height={1000}
@@ -61,8 +60,8 @@ export default async function Home({ searchParams }: SearchParamProps) {
 					Trust By <br /> Thousands of Events{" "}
 				</h1>
 				<div className="flex w-full flex-col gap-5 md:flex-row">
-					<Search/> 
-					<CategoryFilter/>
+					<Search />
+					<CategoryFilter />
 				</div>
 				<Collection
 					data={events?.data}
