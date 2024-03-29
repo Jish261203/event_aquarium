@@ -146,3 +146,11 @@ export type SearchParamProps = {
 	params: { id: string };
 	searchParams: { [key: string]: string | string[] | undefined };
 };
+
+export type SideNavItems = {
+	title: string;
+	path: string;
+	icon?: JSX.Element;
+	submenu?: boolean;
+	subMenuItems?: SideNavItems[];
+}
