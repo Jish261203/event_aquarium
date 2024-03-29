@@ -11,9 +11,9 @@ import Order from "../database/models/order.model";
 export const createUser = async (user: CreateUserParams) => {
 	try {
 		await connectToDatabase();
-        const newUser = await User.create(user);
-        
-        return JSON.parse(JSON.stringify(newUser))
+		const newUser = await User.create(user);
+
+		return JSON.parse(JSON.stringify(newUser));
 	} catch (error) {
 		handleError(error);
 	}
@@ -27,6 +27,21 @@ export async function getUserById(userId: string) {
 
 		if (!user) throw new Error("User not found");
 		return JSON.parse(JSON.stringify(user));
+	} catch (error) {
+		handleError(error);
+	}
+}
+
+export async function getAllUser() {
+	try {
+		await connectToDatabase();
+
+		const users = await User.find();
+
+		// If no users found, return an empty array
+		if (!users) throw new Error("User not found");
+
+		return users.map((user) => JSON.parse(JSON.stringify(user)));
 	} catch (error) {
 		handleError(error);
 	}

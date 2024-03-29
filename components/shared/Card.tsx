@@ -1,10 +1,11 @@
 import { IEvent } from "@/lib/database/models/event.model";
 import { formatDateTime } from "@/lib/utils";
-import { auth } from "@clerk/nextjs";
+import { auth, clerkClient } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { DeleteConfirmation } from "./DeleteConfirmation";
+import { checkRole } from "@/utils/roles";
 
 type CardProps = {
 	event: IEvent;
@@ -14,7 +15,7 @@ type CardProps = {
 const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 	const { sessionClaims } = auth();
 	const userId = sessionClaims?.userId as String;
-
+	
 	const isEventCreator = userId === event.organizer._id.toString();
 
 	return (
@@ -25,7 +26,7 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 				className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
 			/>
 
-			{isEventCreator && !hidePrice && (
+			{(isEventCreator || checkRole("admin")) && !hidePrice && (
 				<div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all ">
 					<Link href={`/events/${event._id}/update`}>
 						<Image
@@ -40,9 +41,7 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 				</div>
 			)}
 
-			<div
-				
-				className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4 ">
+			<div className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4 ">
 				{!hidePrice && (
 					<div className="flex gap-2">
 						<span className="p-semibold-14 w-min rounded-full bg-green-100 px-4 py-1 text-green-60">
@@ -58,10 +57,9 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 				</p>
 
 				<Link href={`/events/${event._id}`}>
-				
-				<p className="p-medium-16 md:p-medium-20 line-clamp-1 flex-1 text-black">
-					{event.title}
-				</p>
+					<p className="p-medium-16 md:p-medium-20 line-clamp-1 flex-1 text-black">
+						{event.title}
+					</p>
 				</Link>
 				<div className="flex-between w-full">
 					<p className="p-medium-14 md:p-medium-16 text-grey-600">

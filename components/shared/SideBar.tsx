@@ -24,15 +24,18 @@ export default function SideBar({ toggleCollapse }: { toggleCollapse: boolean })
 						className="w-20 mx-3.5 min-h-fit"
 					/>
 				</Link>
-				<h3 className="pl-2 font-bold text-2xl text-[#e6e69ee] min-w-max">
-					Dashboard
-				</h3>
+				{!toggleCollapse && (
+					<h3 className="pl-2 font-bold text-2xl text-[#e6e69ee] min-w-max">
+						Dashboard
+					</h3>
+				)}
 			</div>
 			<nav className="flex flex-col gap-2 transition duration-300">
 				<div className="flex flex-col gap-2 px-4">
 					{SIDENAV_ITEMS.map((item, index) => {
 						return (
 							<SideBarMenuItem
+								key={index}
 								item={item}
 								toggleCollapse={toggleCollapse}></SideBarMenuItem>
 						);

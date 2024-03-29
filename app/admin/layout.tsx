@@ -12,12 +12,16 @@ export default function RootLayout({
 	const [toggleCollapse,setToggleCollapse]=useState(false)
 	
 	return (
-		<>
+		<div className="flex">
 			<SideBar toggleCollapse={toggleCollapse} />
-			<div className="flex flex-col h-full w-full">
-				<AdminHeader toggleCollapse={toggleCollapse} setToggleCollapse={setToggleCollapse} />
-				<PageWrapper children={children} />
+
+			<div className="flex flex-col flex-1">
+				<AdminHeader
+					toggleCollapse={toggleCollapse}
+					setToggleCollapse={setToggleCollapse}
+				/>
+				<PageWrapper>{children}</PageWrapper>
 			</div>
-		</>
+		</div>
 	);
 }

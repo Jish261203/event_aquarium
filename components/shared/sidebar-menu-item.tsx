@@ -58,7 +58,10 @@ export const SideBarMenuItem = ({
 											className={`${navMenuDropdownItem} ${
 												subItem.path === pathName ? "text-white" : ""
 											}`}>
-											<span>{subItem.title}</span>
+											<span className="flex items-center"> {/* Add this line */}
+												{subItem.icon} {/* Move the icon here */}
+												{!toggleCollapse && <span className="ml-3">{subItem.title}</span>} {/* Adjust spacing */}
+											</span>
 										</Link>
 									);
 								})}

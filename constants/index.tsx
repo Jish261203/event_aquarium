@@ -2,6 +2,8 @@ import { SideNavItems } from "@/types";
 import { BsHouseDoor } from "react-icons/bs";
 import { MdEvent } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
+import { MdOutlineUpcoming } from "react-icons/md";
+import { SiEventstore } from "react-icons/si";
 
 export const headerLinks = [
 	{
@@ -31,17 +33,17 @@ export const SIDENAV_ITEMS: SideNavItems[] = [
 	},
 	{
 		title: "Users",
-		path: "/admin/dashboard/users",
+		path: "/admin/users",
 		icon: <FaUsers size={20} />,
 	},
 	{
 		title: "Events",
-		path: "/admin/dashboard/events",
+		path: "/admin/events",
 		icon: <MdEvent size={20} />,
 		submenu: true,
 		subMenuItems: [
-			{ title: "Upcoming Events", path: "/admin/dashboard/events/upcoming" },
-			{ title: "Ongoing Events", path: "/admin/dashboard/events/ongoing" },
+			{ title: "Upcoming Events", path: "/admin/events/upcoming" ,icon:<MdOutlineUpcoming size={20}/>},
+			{ title: "All Events", path: "/admin/events/allevents", icon:<SiEventstore size={20}/> },
 		],
 	},
 ];
