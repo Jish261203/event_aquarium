@@ -37,7 +37,7 @@ const Header = () => {
 							asChild
 							className="relative rounded-full scale-80 bg-gradient-to-r from-purple-800 via-blue-900 to-gray-900 text-white border-blue-500 transition-all duration-300 hover:bg-gray-800 hover:text-pink-500 hover:scale-150"
 							size="lg">
-							<Link href="/sign-in">Login</Link>
+							<Link href="/sign-up">Login</Link>
 						</Button>
 					</SignedOut>
 				</div>
