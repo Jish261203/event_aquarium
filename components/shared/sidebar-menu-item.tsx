@@ -49,7 +49,7 @@ export const SideBarMenuItem = ({
 					</a>
 					{subMenuOpen && (
 						<div className="bg-[#3a3f48] border-l-4">
-							<div className="grid gap-y-2 px-10 py-3 leading-5">
+							<div className="grid gap-y-2 leading-5">
 								{item.subMenuItems?.map((subItem, index) => {
 									return (
 										<Link
@@ -58,9 +58,11 @@ export const SideBarMenuItem = ({
 											className={`${navMenuDropdownItem} ${
 												subItem.path === pathName ? "text-white" : ""
 											}`}>
-											<span className="flex items-center"> {/* Add this line */}
-												{subItem.icon} {/* Move the icon here */}
-												{!toggleCollapse && <span className="ml-3">{subItem.title}</span>} {/* Adjust spacing */}
+											<span className="flex items-center pl-2">
+												{subItem.icon}
+												{!toggleCollapse && (
+													<span className="ml-2">{subItem.title}</span>
+												)}
 											</span>
 										</Link>
 									);
