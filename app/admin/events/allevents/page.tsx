@@ -1,5 +1,5 @@
+import AdminCollection from "@/components/shared/AdminCollection";
 import CategoryFilter from "@/components/shared/CategoryFilter";
-import Collection from "@/components/shared/Collection";
 import Search from "@/components/shared/Search";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import { SearchParamProps } from "@/types";
@@ -24,7 +24,7 @@ const AllEvents = async ({ searchParams }: SearchParamProps) => {
 					<Search/>
 					<CategoryFilter />
 				</div>
-				<Collection
+				<AdminCollection
 					data={events?.data}
 					emptyTitle="No Events Avaliable"
 					emptyStateSubtext="Come Back Later"

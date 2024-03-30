@@ -5,24 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { DeleteConfirmation } from "./DeleteConfirmation";
-
-
+import { checkRole } from "@/utils/roles";
 
 type CardProps = {
 	event: IEvent;
 	hasOrderLink?: boolean;
 	hidePrice?: boolean;
 };
-const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
+const AdminCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 	const { sessionClaims } = auth();
 	const userId = sessionClaims?.userId as String;
-	
-	const isEventCreator = userId === event.organizer._id.toString();
 
+    // const isEventCreator = userId === event.organizer._id.toString();
+    const isAdmin= checkRole("admin")
 
-	
-
-	
 	return (
 		<div className=" group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
 			<Link
@@ -31,7 +27,7 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 				className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
 			/>
 
-			{ isEventCreator && !hidePrice && (
+			{isAdmin && !hidePrice && (
 				<div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all ">
 					<Link href={`/events/${event._id}/update`}>
 						<Image
@@ -88,4 +84,4 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 	);
 };
 
-export default Card;
+export default AdminCard;

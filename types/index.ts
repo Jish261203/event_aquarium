@@ -14,12 +14,6 @@ export type UpdateUserParams = {
 	photo: string;
 };
 
-export type UserParams = {
-	firstName: string;
-	lastName: string;
-	username: string;
-	photo: string;
-};
 
 // ====== EVENT PARAMS
 export type CreateEventParams = {

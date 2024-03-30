@@ -1,12 +1,46 @@
-import { getAllUser } from "@/lib/actions/user.action";
-import { IUser } from "@/lib/database/models/user.model";
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import { getAllAdminUser, deleteAdminUser } from "@/lib/actions/user.action"; // Import deleteUser function
+import { Trash, Edit } from "lucide-react";
 
-const UserView = async () => {
+interface IUser {
+	_id: string;
+	clerkId: string;
+	email: string;
+	username: string;
+	firstName: string;
+	lastName: string;
+	photo: string;
+}
 
-  const users = await getAllUser();
+const Page = () => {
+	const [users, setUsers] = useState<IUser[]>([]);
 
-  return (
+	useEffect(() => {
+		// Fetch users data when component mounts
+		const fetchUsers = async () => {
+			try {
+				const fetchedUsers = await getAllAdminUser();
+				setUsers(fetchedUsers);
+			} catch (error) {
+				console.error("Error fetching users:", error);
+			}
+		};
+		fetchUsers();
+	}, []);
+
+	const handleDeleteUser = async (userId: string) => {
+		try {
+			// Call the deleteUser function with the userId
+			await deleteAdminUser(userId);
+			// Refresh the user list after deletion
+			setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+		} catch (error) {
+			console.error("Error deleting user:", error);
+		}
+	};
+
+	return (
 		<>
 			<section className=" bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
 				<h3 className="wrapper h3-bold text-center sm:text-left ">Users</h3>
@@ -22,7 +56,7 @@ const UserView = async () => {
 							<th className="min-w-[150px] py-3 text-left">Username</th>
 							<th className="min-w-[100px] py-3 text-left">First Name</th>
 							<th className="min-w-[150px] py-3 text-left">Last Name</th>
-							<th className="min-w-[150px] py-3 text-left">action</th>
+						
 						</tr>
 					</thead>
 					<tbody>
@@ -49,6 +83,15 @@ const UserView = async () => {
 											<td className="min-w-[150px] py-4">{row.username}</td>
 											<td className="min-w-[150px] py-4">{row.firstName}</td>
 											<td className="min-w-[150px] py-4">{row.lastName}</td>
+											<td className="min-w-[100px] py-4 text-right">
+												<div style={{ display: "flex" }}>
+													<button onClick={() => handleDeleteUser(row._id)}>
+														<Trash size={24} />
+													</button>
+												
+													
+												</div>
+											</td>
 										</tr>
 									))}
 							</>
@@ -60,4 +103,5 @@ const UserView = async () => {
 	);
 };
 
-export default UserView;
+export default Page;
+
