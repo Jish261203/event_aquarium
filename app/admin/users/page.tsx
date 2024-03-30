@@ -13,7 +13,7 @@ interface IUser {
 	photo: string;
 }
 
-const Page = () => {
+const AdminUser = () => {
 	const [users, setUsers] = useState<IUser[]>([]);
 
 	useEffect(() => {
@@ -103,5 +103,5 @@ const Page = () => {
 	);
 };
 
-export default Page;
+export default AdminUser;
 
