@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
 
-
 import { twMerge } from "tailwind-merge";
 import qs from "query-string";
 
@@ -34,17 +33,17 @@ export const formatDateTime = (dateString: Date) => {
 	};
 
 	const formattedDateTime: string = new Date(dateString).toLocaleString(
-		"en-US",
+		"en-IN",
 		dateTimeOptions
 	);
 
 	const formattedDate: string = new Date(dateString).toLocaleString(
-		"en-US",
+		"en-IN",
 		dateOptions
 	);
 
 	const formattedTime: string = new Date(dateString).toLocaleString(
-		"en-US",
+		"en-IN",
 		timeOptions
 	);
 
@@ -59,9 +58,9 @@ export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 
 export const formatPrice = (price: string) => {
 	const amount = parseFloat(price);
-	const formattedPrice = new Intl.NumberFormat("en-US", {
+	const formattedPrice = new Intl.NumberFormat("en-IN", {
 		style: "currency",
-		currency: "USD",
+		currency: "INR",
 	}).format(amount);
 
 	return formattedPrice;
@@ -104,4 +103,3 @@ export const handleError = (error: unknown) => {
 	console.error(error);
 	throw new Error(typeof error === "string" ? error : JSON.stringify(error));
 };
-
