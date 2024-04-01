@@ -65,37 +65,42 @@ const Orders = ({
 							<th className="min-w-[150px] py-3 text-left">Buyer</th>
 							<th className="min-w-[100px] py-3 text-left">Created</th>
 							<th className="min-w-[100px] py-3 text-right">Amount</th>
-						
 						</tr>
 					</thead>
 					<tbody>
-						{orders.map((row: IOrderItem) => (
-							<tr
-								key={row._id}
-								className="p-regular-14 lg:p-regular-16 border-b "
-								style={{ boxSizing: "border-box" }}>
-								<td className="min-w-[250px] py-4 text-primary-500">
-									{row._id}
-								</td>
-								<td className="min-w-[200px] flex-1 py-4 pr-4">
-									{row.eventTitle}
-								</td>
-								<td className="min-w-[150px] py-4">{row.buyer}</td>
-								<td className="min-w-[100px] py-4">
-									{formatDateTime(row.createdAT).dateTime}
-								</td>
-								<td className="min-w-[100px] py-4 text-right">
-									{formatPrice(row.totalAmount)}
-								</td>
-								<td className="min-w-[100px] py-4 text-right">
-									<button onClick={() => handleDeleteOrder(row._id)}>
-										<Trash size={24} /> 
-									</button>
-
-									
+						{orders.length === 0 ? (
+							<tr className="border-b">
+								<td colSpan={6} className="py-4 text-center text-gray-500">
+									No orders found.
 								</td>
 							</tr>
-						))}
+						) : (
+							orders.map((row: IOrderItem) => (
+								<tr
+									key={row._id}
+									className="p-regular-14 lg:p-regular-16 border-b"
+									style={{ boxSizing: "border-box" }}>
+									<td className="min-w-[250px] py-4 text-primary-500">
+										{row._id}
+									</td>
+									<td className="min-w-[200px] flex-1 py-4 pr-4">
+										{row.eventTitle}
+									</td>
+									<td className="min-w-[150px] py-4">{row.buyer}</td>
+									<td className="min-w-[100px] py-4">
+										{formatDateTime(row.createdAT).dateTime}
+									</td>
+									<td className="min-w-[100px] py-4 text-right">
+										{formatPrice(row.totalAmount)}
+									</td>
+									<td className="min-w-[100px] py-4 text-right">
+										<button onClick={() => handleDeleteOrder(row._id)}>
+											<Trash size={24} />
+										</button>
+									</td>
+								</tr>
+							))
+						)}
 					</tbody>
 				</table>
 			</section>
