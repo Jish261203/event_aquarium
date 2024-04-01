@@ -94,9 +94,8 @@ const EventDetails = async ({
 									height={32}
 								/>
 								<p>{event.location}</p>
-
 							</div>
-								{/* Checkout Button  */}
+							{/* Checkout Button  */}
 
 							<div>
 								<CheckoutButton event={event} />
