@@ -6,7 +6,7 @@ import { IEvent } from "@/lib/database/models/event.model";
 import { SearchParamProps } from "@/types";
 import React from "react";
 
-const UpcomingEvents = async ({ searchParams }: SearchParamProps) => {
+const CompletedEvents = async ({ searchParams }: SearchParamProps) => {
 	const page = Number(searchParams?.page) || 1;
 	const searchText = (searchParams?.query as string) || "";
 	const category = (searchParams?.category as string) || "";
@@ -15,21 +15,19 @@ const UpcomingEvents = async ({ searchParams }: SearchParamProps) => {
 		category,
 		page,
 		limit: 6,
-  });
+	});
 
-  const currentDateTime = new Date()
-  const filterEvents = events?.data.filter((item:IEvent) => {
-    const startDateTime = new Date(item.startDateTime)
-    return startDateTime > currentDateTime
-  })
-  
-  
+	const currentDateTime = new Date();
+	const filterEvents = events?.data.filter((item: IEvent) => {
+		const startDateTime = new Date(item.startDateTime);
+		return startDateTime < currentDateTime;
+	});
 
 	return (
 		<>
 			<section className=" bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
 				<h3 className="wrapper h3-bold text-center sm:text-left ">
-					Upcoming Events
+					Completed Events
 				</h3>
 			</section>
 			<section
@@ -53,4 +51,4 @@ const UpcomingEvents = async ({ searchParams }: SearchParamProps) => {
 	);
 };
 
-export default UpcomingEvents;
+export default CompletedEvents;

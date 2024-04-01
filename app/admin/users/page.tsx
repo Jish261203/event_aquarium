@@ -31,10 +31,8 @@ const AdminUser = () => {
 
 	const handleDeleteUser = async (userId: string) => {
 		try {
-			// Call the deleteUser function with the userId
 			await deleteAdminUser(userId);
-			// Refresh the user list after deletion
-			setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+			setUsers((prevUsers) => prevUsers.filter((user) => user.clerkId !== userId));
 		} catch (error) {
 			console.error("Error deleting user:", error);
 		}
@@ -56,7 +54,6 @@ const AdminUser = () => {
 							<th className="min-w-[150px] py-3 text-left">Username</th>
 							<th className="min-w-[100px] py-3 text-left">First Name</th>
 							<th className="min-w-[150px] py-3 text-left">Last Name</th>
-						
 						</tr>
 					</thead>
 					<tbody>
@@ -75,7 +72,7 @@ const AdminUser = () => {
 											className="p-regular-14 lg:p-regular-16 border-b "
 											style={{ boxSizing: "border-box" }}>
 											<td className="min-w-[250px] py-4 text-primary-500">
-												{row._id}
+												{row.clerkId}
 											</td>
 											<td className="min-w-[200px] flex-1 py-4 pr-4">
 												{row.email}
@@ -85,11 +82,9 @@ const AdminUser = () => {
 											<td className="min-w-[150px] py-4">{row.lastName}</td>
 											<td className="min-w-[100px] py-4 text-right">
 												<div style={{ display: "flex" }}>
-													<button onClick={() => handleDeleteUser(row._id)}>
+													<button onClick={() => handleDeleteUser(row.clerkId)}>
 														<Trash size={24} />
 													</button>
-												
-													
 												</div>
 											</td>
 										</tr>
@@ -104,4 +99,3 @@ const AdminUser = () => {
 };
 
 export default AdminUser;
-

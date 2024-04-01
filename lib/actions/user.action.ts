@@ -86,17 +86,18 @@ export async function deleteUser(clerkId: string) {
 }
 
 
-export async function deleteAdminUser(_id: string) {
+export async function deleteAdminUser(clerkId: string) {
 	try {
 		await connectToDatabase();
 
 		// Find user to delete
-		const userToDelete = await User.findOne({ _id });
+		const userToDelete = await User.findOne({ clerkId });
 
 		if (!userToDelete) {
 			throw new Error("User not found");
 		}
 
+		// Unlink relationships
 		await Promise.all([
 			// Update the 'events' collection to remove references to the user
 			Event.updateMany(
@@ -131,5 +132,97 @@ export async function getAllAdminUser() {
 	} catch (error) {
 		handleError(error);
 		return []; // Return an empty array in case of error
+	}
+}
+
+export async function getAllEvents() {
+	try {
+		await connectToDatabase();
+		const events = await Event.find(
+			{},
+			"title location startDateTime endDateTime price"
+		);
+
+		// Map the events to the desired format
+		const formattedEvents = events.map((event) => ({
+			title: event.title,
+			location: event.location,
+			startDateTime: event.startDateTime,
+			endDateTime: event.endDateTime,
+			price: event.price,
+		}));
+
+		return formattedEvents;
+	} catch (error) {
+		handleError(error);
+		return []; // Return an empty array in case of error
+	}
+}
+
+export async function getTotalUserCount() {
+	try {
+		await connectToDatabase();
+
+		// Use the countDocuments method to count the total number of users
+		const totalCount = await User.countDocuments();
+
+		return totalCount;
+	} catch (error) {
+		handleError(error);
+	}
+}
+
+export async function getTotaEventCount() {
+	try {
+		await connectToDatabase();
+
+		// Use the countDocuments method to count the total number of users
+		const totalCount = await Event.countDocuments();
+
+		return totalCount;
+	} catch (error) {
+		handleError(error);
+	}
+}
+
+export async function getTotalOrderCount() {
+	try {
+		await connectToDatabase();
+
+		// Use the countDocuments method to count the total number of users
+		const totalCount = await Order.countDocuments();
+
+		return totalCount;
+	} catch (error) {
+		handleError(error);
+	}
+}
+
+
+export async function deleteOrderFromEvent(orderId: string) {
+	try {
+		await connectToDatabase();
+
+		// Find the order to delete
+		const orderToDelete = await Order.findOne({ _id: orderId });
+
+		if (!orderToDelete) {
+			throw new Error("Order not found");
+		}
+
+		// Unlink relationships only for this order
+		await Promise.all([
+			// Update the 'events' collection to remove references to the order for this specific event
+			Event.updateMany(
+				{ _id: orderToDelete.eventId },
+				{ $pull: { orders: orderId } }
+			),
+			// Delete the order from the 'orders' collection
+			Order.deleteOne({ _id: orderId }),
+		]);
+
+		return orderToDelete ? JSON.parse(JSON.stringify(orderToDelete)) : null;
+	} catch (error) {
+		handleError(error);
 	}
 }

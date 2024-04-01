@@ -143,6 +143,7 @@ export async function getAllEvents({
 	}
 }
 
+
 // GET EVENTS BY ORGANIZER
 export async function getEventsByUser({
 	userId,
@@ -203,3 +204,6 @@ export async function getRelatedEventsByCategory({
 		handleError(error);
 	}
 }
+
+
+

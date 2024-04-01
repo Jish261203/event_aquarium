@@ -43,7 +43,7 @@ export const SIDENAV_ITEMS: SideNavItems[] = [
 		submenu: true,
 		subMenuItems: [
 			{ title: "Upcoming Events", path: "/admin/events/upcoming" ,icon:<MdOutlineUpcoming size={20}/>},
-			{ title: "All Events", path: "/admin/events/allevents", icon:<SiEventstore size={20}/> },
+			{ title: "Completed Events", path: "/admin/events/completed", icon:<SiEventstore size={20}/> },
 		],
 	},
 ];

@@ -6,22 +6,22 @@ import { SideBarMenuItem } from "./sidebar-menu-item";
 import classNames from "classnames"
 export default function SideBar({ toggleCollapse }: { toggleCollapse: boolean }) {
 	const asideStyle = classNames(
-		"fixed bg-[#31353d] text-gray-500 z-50 h-full shadow-lg shadow-gray-900/20 transition duration-300 ease-in-out w-[20rem]",
+		" fixed bg-[#31353d] text-gray-500 z-50 h-full shadow-lg shadow-gray-900/20 transition duration-300 ease-in-out w-[20rem]",
 		{
-			["w-[5rem]"]:toggleCollapse,
+			["sm:w-[5.4rem] sm:left-0 left-[-100%]"]:toggleCollapse,
 			["w-[20rem]"]:!toggleCollapse
 		}
 	);
 	return (
 		<aside className={asideStyle}>
 			<div className="flex relative items-center py-5 px-3.5">
-				<Link href="/" className="w-12 mx-3.5 min-w-max">
+				<Link href="/" className="w-14 mx-0 min-w-max">
 					<Image
 						src="/assets/images/logo1.svg"
 						alt="logo"
 						width={60}
 						height={40}
-						className="w-20 mx-3.5 min-h-fit"
+						className="w-20 mx-0 min-h-fit"
 					/>
 				</Link>
 				{!toggleCollapse && (
