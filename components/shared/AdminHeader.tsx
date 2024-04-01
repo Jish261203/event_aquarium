@@ -1,7 +1,8 @@
+"use client"
 import classNames from "classnames";
 import { Dispatch, SetStateAction } from "react";
 import { BsList } from "react-icons/bs";
-const  AdminHeader=async({ toggleCollapse, setToggleCollapse }: { toggleCollapse: boolean, setToggleCollapse: Dispatch<SetStateAction<boolean>> })=> {
+const  AdminHeader=({ toggleCollapse, setToggleCollapse }: { toggleCollapse: boolean, setToggleCollapse: Dispatch<SetStateAction<boolean>> })=> {
 
 	const sideBarToggle = () => {
 		setToggleCollapse(!toggleCollapse)
