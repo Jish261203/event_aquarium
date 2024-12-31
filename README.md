@@ -26,12 +26,24 @@
   <br />
 </div>
 
-## 📋 <a name="table">Table of Contents</a>
+## 📋 Table of Contents
 
-1. 🤖 [Introduction](#introduction)
-2. ⚙️ [Tech Stack](#tech-stack)
-3. 🔋 [Features](#features)
-4. 🤸 [Quick Start](#quick-start)
+1. 📹 [Video](#video)
+2. 🤖 [Introduction](#introduction)
+3. ⚙️ [Tech Stack](#tech-stack)
+4. 🔋 [Features](#features)
+5. 🤸 [Quick Start](#quick-start)
+
+
+
+<h2 name="video">📹 Video</h2>
+<div>
+  <br />
+   <a href="https://youtu.be/MHPfzo4Am7g" target="_blank">
+    <img src="https://media1.tenor.com/m/dFOeYJ0UEWAAAAAd/yt-youtube.gif" alt="Project Banner" style="width: 300px; height: auto;">
+  </a>
+  <br />
+</div>
 
 ## <a name="introduction">🤖 Introduction</a>
 
