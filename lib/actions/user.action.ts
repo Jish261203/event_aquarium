@@ -9,6 +9,7 @@ import Event from "@/lib/database/models/event.model";
 import { handleError } from "@/lib/utils";
 
 import { CreateUserParams, UpdateUserParams } from "@/types";
+import { clerkClient } from "@clerk/nextjs";
 
 export async function createUser(user: CreateUserParams) {
 	try {
@@ -50,76 +51,75 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
 }
 
 export async function deleteUser(clerkId: string) {
-	try {
-		await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-		// Find user to delete
-		const userToDelete = await User.findOne({ clerkId });
+    // Find user to delete
+    const userToDelete = await User.findOne({ clerkId });
 
-		if (!userToDelete) {
-			throw new Error("User not found");
-		}
+    if (!userToDelete) {
+      throw new Error("User not found");
+    }
 
-		// Unlink relationships
-		await Promise.all([
-			// Update the 'events' collection to remove references to the user
-			Event.updateMany(
-				{ _id: { $in: userToDelete.events } },
-				{ $pull: { organizer: userToDelete._id } }
-			),
+    // Unlink relationships
+    await Promise.all([
+      Event.updateMany(
+        { _id: { $in: userToDelete.events } },
+        { $pull: { organizer: userToDelete._id } }
+      ),
+      Order.updateMany(
+        { _id: { $in: userToDelete.orders } },
+        { $unset: { buyer: 1 } }
+      ),
+    ]);
 
-			// Update the 'orders' collection to remove references to the user
-			Order.updateMany(
-				{ _id: { $in: userToDelete.orders } },
-				{ $unset: { buyer: 1 } }
-			),
-		]);
+    // 🔥 Delete from Clerk
+    await clerkClient.users.deleteUser(clerkId);
 
-		// Delete user
-		const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-		revalidatePath("/");
+    // Delete from MongoDB
+    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
+    revalidatePath("/");
 
-		return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
-	} catch (error) {
-		handleError(error);
-	}
+    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
+  } catch (error) {
+    handleError(error);
+  }
 }
 
-
 export async function deleteAdminUser(clerkId: string) {
-	try {
-		await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-		// Find user to delete
-		const userToDelete = await User.findOne({ clerkId });
+    // Find user to delete
+    const userToDelete = await User.findOne({ clerkId });
 
-		if (!userToDelete) {
-			throw new Error("User not found");
-		}
+    if (!userToDelete) {
+      throw new Error("User not found");
+    }
 
-		// Unlink relationships
-		await Promise.all([
-			// Update the 'events' collection to remove references to the user
-			Event.updateMany(
-				{ _id: { $in: userToDelete.events } },
-				{ $pull: { organizer: userToDelete._id } }
-			),
+    // Unlink relationships
+    await Promise.all([
+      Event.updateMany(
+        { _id: { $in: userToDelete.events } },
+        { $pull: { organizer: userToDelete._id } }
+      ),
+      Order.updateMany(
+        { _id: { $in: userToDelete.orders } },
+        { $unset: { buyer: 1 } }
+      ),
+    ]);
 
-			// Update the 'orders' collection to remove references to the user
-			Order.updateMany(
-				{ _id: { $in: userToDelete.orders } },
-				{ $unset: { buyer: 1 } }
-			),
-		]);
+    // 🔥 Delete from Clerk
+    await clerkClient.users.deleteUser(clerkId);
 
-		// Delete user
-		const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-		revalidatePath("/");
+    // Delete from MongoDB
+    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
+    revalidatePath("/");
 
-		return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
-	} catch (error) {
-		handleError(error);
-	}
+    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
+  } catch (error) {
+    handleError(error);
+  }
 }
 
 export async function getAllAdminUser() {
