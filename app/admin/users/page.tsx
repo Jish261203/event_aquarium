@@ -33,6 +33,7 @@ const AdminUser = () => {
 		try {
 			await deleteAdminUser(userId);
 			setUsers((prevUsers) => prevUsers.filter((user) => user.clerkId !== userId));
+			window.location.href = "/";
 		} catch (error) {
 			console.error("Error deleting user:", error);
 		}
