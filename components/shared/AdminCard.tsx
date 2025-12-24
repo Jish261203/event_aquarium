@@ -69,7 +69,9 @@ const AdminCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
         <div className="mt-3 flex justify-between items-center">
           <p className="text-gray-600">
-            {event.organizer.firstName} {event.organizer.lastName}
+            {event.organizer
+              ? `${event.organizer.firstName} ${event.organizer.lastName}`
+              : "Unknown Organizer"}
           </p>
           {hasOrderLink && (
             <Link
