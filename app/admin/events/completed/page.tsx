@@ -23,6 +23,9 @@ const CompletedEvents = async ({ searchParams }: SearchParamProps) => {
     return endDateTime < currentDateTime;
   });
 
+  // Serialize the filtered events to ensure Date objects are converted to strings
+  const serializedEvents = JSON.parse(JSON.stringify(filterEvents));
+
   return (
     <>
       <section className=" bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
@@ -40,12 +43,13 @@ const CompletedEvents = async ({ searchParams }: SearchParamProps) => {
         </div>
         <AdminCollection
           data={filterEvents}
+          data={serializedEvents}
           emptyTitle="No Events Avaliable"
           emptyStateSubtext="Come Back Later"
           collectionType="All_Events"
           limit={6}
           page={Number(searchParams?.page) || 1}
-          totalPages={filterEvents?.totalPages}
+          totalPages={events?.totalPages}
         />
       </section>
     </>
