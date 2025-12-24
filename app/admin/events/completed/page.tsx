@@ -42,7 +42,6 @@ const CompletedEvents = async ({ searchParams }: SearchParamProps) => {
           <CategoryFilter />
         </div>
         <AdminCollection
-          data={filterEvents}
           data={serializedEvents}
           emptyTitle="No Events Avaliable"
           emptyStateSubtext="Come Back Later"
