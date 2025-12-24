@@ -13,6 +13,10 @@ import React from "react";
 const ProfilePage = async ({ searchParams }: SearchParamProps) => {
   const { userId } = auth();
 
+  if (!userId) {
+    return null;
+  }
+
   const ordersPage = Number(searchParams?.ordersPage) || 1;
 
   const eventsPage = Number(searchParams?.eventsPage) || 1;

@@ -1,6 +1,7 @@
 import EventForm from "@/components/shared/EventForm";
 import { getEventById } from "@/lib/actions/event.actions";
 import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 import React from "react";
 
 type UpdateEventProps = {
@@ -12,6 +13,7 @@ type UpdateEventProps = {
 const UpdateEvent = async ({ params: { id } }: UpdateEventProps) => {
   const event = await getEventById(id);
   const { userId } = auth();
+  if (!userId) redirect("/sign-in");
   return (
     <>
       <section className="bg-slate-300 bg-dotted-pattern bg-cover bg bg-center py-5 md:py-10 ">
