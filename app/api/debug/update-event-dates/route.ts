@@ -10,12 +10,22 @@ export async function POST(req: Request) {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
+    // Find first 3 events
+    const eventsToUpdate = await Event.find({}).limit(3);
+
+    if (eventsToUpdate.length === 0) {
+      return NextResponse.json({
+        message: "No events found to update",
+      });
+    }
+
+    // Update those events with past end dates
+    const eventIds = eventsToUpdate.map((e) => e._id);
     const result = await Event.updateMany(
-      {},
+      { _id: { $in: eventIds } },
       {
         endDateTime: yesterday,
-      },
-      { limit: 3 }
+      }
     );
 
     console.log(
