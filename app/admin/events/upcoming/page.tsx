@@ -19,12 +19,23 @@ const UpcomingEvents = async ({ searchParams }: SearchParamProps) => {
 
   const currentDateTime = new Date();
   const filterEvents = events?.data.filter((item: IEvent) => {
-    const startDateTime = new Date(item.startDateTime);
+    // Ensure startDateTime is converted to Date object
+    const startDateTime = typeof item.startDateTime === 'string' 
+      ? new Date(item.startDateTime) 
+      : item.startDateTime;
     return startDateTime > currentDateTime;
   });
 
+  console.log(`[Upcoming Events] Total events: ${events?.data.length}, Filtered: ${filterEvents?.length}`);
+  if (filterEvents && filterEvents.length > 0) {
+    console.log(`[Upcoming Events] First event start date:`, filterEvents[0].startDateTime);
+    console.log(`[Upcoming Events] First event data:`, filterEvents[0]);
+  }
+
   // Serialize the filtered events to ensure Date objects are converted to strings
-  const serializedEvents = JSON.parse(JSON.stringify(filterEvents));
+  const serializedEvents = filterEvents ? JSON.parse(JSON.stringify(filterEvents)) : [];
+  console.log(`[Upcoming Events] Serialized events count:`, serializedEvents.length);
+  console.log(`[Upcoming Events] Serialized events:`, serializedEvents);
 
   return (
     <>

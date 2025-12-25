@@ -16,54 +16,51 @@ const EventDetails = async ({
 }: SearchParamProps) => {
   const event = await getEventById(id);
 
-//   if (!event) {
-//     return (
-//       <div className="wrapper my-8 text-center">
-//         <h2 className="h2-bold">Event Not Found</h2>
-//         <p className="text-gray-600">
-//           The event you are looking for does not exist or has been removed.
-//         </p>
-//         <Link href="/" className="text-primary-500 underline">
-//           Return to Home
-//         </Link>
-//       </div>
-//     );
-//   }
+  //   if (!event) {
+  //     return (
+  //       <div className="wrapper my-8 text-center">
+  //         <h2 className="h2-bold">Event Not Found</h2>
+  //         <p className="text-gray-600">
+  //           The event you are looking for does not exist or has been removed.
+  //         </p>
+  //         <Link href="/" className="text-primary-500 underline">
+  //           Return to Home
+  //         </Link>
+  //       </div>
+  //     );
+  //   }
 
   // Check if expired
   const isExpired = new Date(event.endDateTime) < new Date();
 
-	
-if (isExpired) {
-  return (
-    <div className="wrapper relative my-16 flex flex-col items-center justify-center text-center p-10 rounded-xl shadow-md overflow-hidden">
-      {/* Watermark Image as Background */}
-      <Image
-        src="/assets/images/closed.png"
-        alt="expired watermark"
-        fill
-        className="absolute inset-1 object-contain opacity-45 pointer-events-none"
-      />
+  if (isExpired) {
+    return (
+      <div className="wrapper relative my-16 flex flex-col items-center justify-center text-center p-10 rounded-xl shadow-md overflow-hidden">
+        {/* Watermark Image as Background */}
+        <Image
+          src="/assets/images/closed.png"
+          alt="expired watermark"
+          fill
+          className="absolute inset-1 object-contain opacity-45 pointer-events-none"
+        />
 
-      {/* Foreground Content */}
-      <h2 className="h2-bold text-red-600 mt-4 relative z-10">
-        This Event Has Expired
-      </h2>
-      <p className="text-gray-600 mt-2 relative z-10">
-        Unfortunately, this event has already ended. Please check out other
-        exciting events happening soon!
-      </p>
-      <Link
-        href="/"
-        className="mt-5 bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition relative z-10"
-      >
-        Browse Events
-      </Link>
-    </div>
-  );
-}
-
-
+        {/* Foreground Content */}
+        <h2 className="h2-bold text-red-600 mt-4 relative z-10">
+          This Event Has Expired
+        </h2>
+        <p className="text-gray-600 mt-2 relative z-10">
+          Unfortunately, this event has already ended. Please check out other
+          exciting events happening soon!
+        </p>
+        <Link
+          href="/"
+          className="mt-5 bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition relative z-10"
+        >
+          Browse Events
+        </Link>
+      </div>
+    );
+  }
 
   // Fetch related events only if event is active
   const relatedEvents = await getRelatedEventsByCategory({
@@ -81,9 +78,8 @@ if (isExpired) {
             <Image
               src={event.imageUrl}
               alt="hero image"
-              layout="fill"
-              objectFit="cover"
-              objectPosition="center"
+              fill
+              className="object-cover object-center"
               unoptimized
             />
           </div>

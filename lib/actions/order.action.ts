@@ -16,6 +16,7 @@ import { ObjectId } from "mongodb";
 import User from "../database/models/user.model";
 import Event from "../database/models/event.model";
 import { isValidObjectId } from "mongoose";
+import { clerkClient } from "@clerk/nextjs/server";
 
 // CHECK IF USER ALREADY BOUGHT EVENT
 export async function hasUserBoughtEvent(userId: string, eventId: string) {
@@ -98,6 +99,20 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
   const price = order.isFree ? 0 : Number(order.price) * 100;
 
   try {
+    console.log("[Checkout] Starting checkout with order:", {
+      eventTitle: order.eventTitle,
+      eventId: order.eventId,
+      buyerId: order.buyerId,
+      isFree: order.isFree,
+    });
+
+    // VALIDATION: Check if buyerId is empty
+    if (!order.buyerId || order.buyerId.trim() === "") {
+      throw new Error(
+        "User ID is missing. Please make sure you are logged in. If this persists, try logging out and back in."
+      );
+    }
+
     await connectToDatabase();
 
     let buyer;
@@ -105,17 +120,56 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
     // 1. CHECK: Is this a valid MongoDB ObjectId? (e.g., "65a4c...")
     if (isValidObjectId(order.buyerId)) {
       buyer = await User.findById(order.buyerId);
+      console.log(
+        `[Checkout] Found buyer by MongoDB ID:`,
+        buyer ? "Yes" : "No"
+      );
     }
 
     // 2. CHECK: If not found yet, try searching by Clerk ID (e.g., "user_2b...")
     if (!buyer) {
       buyer = await User.findOne({ clerkId: order.buyerId });
+      console.log(`[Checkout] Found buyer by Clerk ID:`, buyer ? "Yes" : "No");
     }
 
-    // 3. FINAL CHECK: If still no buyer, the webhook likely failed.
+    // 3. AUTO-CREATE: If still no buyer, try to fetch from Clerk and create in DB
+    if (!buyer && order.buyerId.startsWith("user_")) {
+      try {
+        console.log(`[Checkout] Fetching user from Clerk: ${order.buyerId}`);
+        const clerkUser = await clerkClient.users.getUser(order.buyerId);
+
+        // Create user in database
+        const newUser = await User.create({
+          clerkId: clerkUser.id,
+          email: clerkUser.emailAddresses[0]?.emailAddress || "",
+          username:
+            clerkUser.username ||
+            clerkUser.emailAddresses[0]?.emailAddress?.split("@")[0] ||
+            "user",
+          firstName: clerkUser.firstName || "",
+          lastName: clerkUser.lastName || "",
+          photo: clerkUser.imageUrl || "",
+        });
+
+        buyer = newUser;
+        console.log(`[Checkout] User auto-created in database:`, buyer._id);
+      } catch (clerkError) {
+        console.error(`[Checkout] Failed to auto-create user:`, clerkError);
+      }
+    }
+
+    // 4. FINAL CHECK: If still no buyer, throw error
     if (!buyer) {
+      console.error(`[Checkout] Buyer not found for ID: ${order.buyerId}`);
+      // Try to get all users for debugging
+      const allUsers = await User.find({}).limit(5);
+      console.error(
+        `[Checkout] Sample users in DB:`,
+        allUsers.map((u) => ({ clerkId: u.clerkId, _id: u._id }))
+      );
+
       throw new Error(
-        "Buyer not found in database. Ensure the webhook is set up correctly."
+        `Buyer not found in database. User ID received: "${order.buyerId}". Please try logging out and logging back in, then refresh the page. If the issue persists, contact support.`
       );
     }
 

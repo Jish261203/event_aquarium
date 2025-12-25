@@ -58,50 +58,73 @@ export async function POST(req: Request) {
     if (eventType === 'user.created') {
         const { id, email_addresses, image_url, first_name, last_name, username } = evt.data
         
+        try {
             const user = {
-							clerkId: id,
-							email: email_addresses[0].email_address,
-							username: username!,
-							firstName: first_name,
-							lastName: last_name,
-							photo: image_url,
-        };
-        
-        const newUser = await createUser(user);
+                clerkId: id,
+                email: email_addresses[0].email_address,
+                username: username!,
+                firstName: first_name,
+                lastName: last_name,
+                photo: image_url,
+            };
+            
+            console.log('[Webhook] Creating user with data:', { clerkId: id, email: user.email });
+            const newUser = await createUser(user);
+            console.log('[Webhook] User created successfully:', { _id: newUser._id, clerkId: newUser.clerkId });
 
-        if (newUser) {
-            await clerkClient.users.updateUserMetadata(id, {
-                publicMetadata: {
-                    userId:newUser._id
-                }
-            })
+            if (newUser) {
+                console.log('[Webhook] Updating Clerk metadata with userId:', newUser._id);
+                await clerkClient.users.updateUserMetadata(id, {
+                    publicMetadata: {
+                        userId: newUser._id.toString()
+                    }
+                });
+                console.log('[Webhook] Clerk metadata updated successfully');
+            }
+
+            return NextResponse.json({message:'OK',user:newUser})
+        } catch (error) {
+            console.error('[Webhook] Error creating user:', error);
+            return NextResponse.json({message:'Error creating user', error: String(error)}, {status: 500})
         }
-
-        return NextResponse.json({message:'OK',user:newUser})
+    }
 
     }
 
     if (eventType === 'user.updated') {
         const { id, image_url, first_name, last_name, username } = evt.data
         
-        const user = {
-            firstName: first_name,
-            lastName: last_name,
-            username: username!,
-            photo:image_url,
-        }
+        try {
+            const user = {
+                firstName: first_name,
+                lastName: last_name,
+                username: username!,
+                photo:image_url,
+            }
 
-        const updatedUser = await updateUser(id, user)
-        
-        return NextResponse.json({ message: "OK", user: updatedUser });
+            console.log('[Webhook] Updating user with clerkId:', id);
+            const updatedUser = await updateUser(id, user)
+            console.log('[Webhook] User updated successfully');
+            
+            return NextResponse.json({ message: "OK", user: updatedUser });
+        } catch (error) {
+            console.error('[Webhook] Error updating user:', error);
+            return NextResponse.json({message:'Error updating user', error: String(error)}, {status: 500})
+        }
     }
     
     if (eventType === 'user.deleted') {
         const { id } = evt.data
         
-        const deletedUser = await deleteUser(id!)
-        return NextResponse.json({ message: "OK", user: deletedUser });
-
+        try {
+            console.log('[Webhook] Deleting user with clerkId:', id);
+            const deletedUser = await deleteUser(id!)
+            console.log('[Webhook] User deleted successfully');
+            return NextResponse.json({ message: "OK", user: deletedUser });
+        } catch (error) {
+            console.error('[Webhook] Error deleting user:', error);
+            return NextResponse.json({message:'Error deleting user', error: String(error)}, {status: 500})
+        }
     }
 
 

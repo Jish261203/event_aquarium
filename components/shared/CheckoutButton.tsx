@@ -10,7 +10,17 @@ import { hasUserBoughtEvent } from "@/lib/actions/order.action";
 const CheckoutButton = ({ event }: { event: IEvent }) => {
   const hasEventFinsihed = new Date(event.endDateTime) < new Date();
   const { user } = useUser();
-  const userId = user?.publicMetadata.userId as string;
+  // Try to get userId from metadata, fallback to Clerk ID
+  const userId = user?.publicMetadata?.userId
+    ? (user.publicMetadata.userId as string)
+    : user?.id || "";
+
+  console.log("[CheckoutButton] user object:", {
+    id: user?.id,
+    publicMetadata: user?.publicMetadata,
+    userId: userId,
+  });
+
   const [alreadyBought, setAlreadyBought] = useState(false);
   const [loading, setLoading] = useState(true);
 

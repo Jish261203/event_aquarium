@@ -12,6 +12,7 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
   const maxTickets = 5;
 
   useEffect(() => {
+    console.log("[Checkout] Component mounted with userId:", userId);
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
     if (query.get("success")) {
@@ -23,11 +24,11 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
         "Order canceled -- continue to shop around and checkout when you're ready."
       );
     }
-  }, []);
+  }, [userId]);
 
   const totalPrice = event.isFree
     ? "0"
-    : (parseFloat(event.price) * quantity).toFixed(2);
+    : (parseFloat(event.price || "0") * quantity).toFixed(2);
 
   const onCheckout = async () => {
     const order = {
