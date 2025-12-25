@@ -10,7 +10,7 @@ const CompletedEvents = async ({ searchParams }: SearchParamProps) => {
   const page = Number(searchParams?.page) || 1;
   const searchText = (searchParams?.query as string) || "";
   const category = (searchParams?.category as string) || "";
-  
+
   // Fetch ALL events without pagination to ensure we get completed ones
   const events = await getAllEvents({
     query: searchText,
@@ -22,25 +22,38 @@ const CompletedEvents = async ({ searchParams }: SearchParamProps) => {
   const currentDateTime = new Date();
   console.log(`[Completed Events] Current time:`, currentDateTime);
   console.log(`[Completed Events] Total events fetched:`, events?.data?.length);
-  
-  const filterEvents = events?.data?.filter((item: IEvent) => {
-    // Ensure endDateTime is converted to Date object
-    const endDateTime = typeof item.endDateTime === 'string' 
-      ? new Date(item.endDateTime) 
-      : item.endDateTime;
-    
-    const isCompleted = endDateTime < currentDateTime;
-    console.log(`[Completed Events] Event: "${item.title}", EndDate: ${endDateTime.toISOString()}, IsCompleted: ${isCompleted}`);
-    return isCompleted;
-  }) || [];
 
-  console.log(`[Completed Events] Total events: ${events?.data?.length}, Filtered completed: ${filterEvents?.length}`);
+  const filterEvents =
+    events?.data?.filter((item: IEvent) => {
+      // Ensure endDateTime is converted to Date object
+      const endDateTime =
+        typeof item.endDateTime === "string"
+          ? new Date(item.endDateTime)
+          : item.endDateTime;
+
+      const isCompleted = endDateTime < currentDateTime;
+      console.log(
+        `[Completed Events] Event: "${
+          item.title
+        }", EndDate: ${endDateTime.toISOString()}, IsCompleted: ${isCompleted}`
+      );
+      return isCompleted;
+    }) || [];
+
+  console.log(
+    `[Completed Events] Total events: ${events?.data?.length}, Filtered completed: ${filterEvents?.length}`
+  );
   if (filterEvents && filterEvents.length > 0) {
-    console.log(`[Completed Events] First event end date:`, filterEvents[0].endDateTime);
+    console.log(
+      `[Completed Events] First event end date:`,
+      filterEvents[0].endDateTime
+    );
   }
 
   // Serialize the filtered events to ensure Date objects are converted to strings
-  const serializedEvents = filterEvents ? JSON.parse(JSON.stringify(filterEvents)) : [];
+  const serializedEvents = filterEvents
+    ? JSON.parse(JSON.stringify(filterEvents))
+    : [];
 
   return (
     <>

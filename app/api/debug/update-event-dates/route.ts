@@ -18,7 +18,9 @@ export async function POST(req: Request) {
       { limit: 3 }
     );
 
-    console.log(`[Update Event Dates] Updated ${result.modifiedCount} events with past end dates`);
+    console.log(
+      `[Update Event Dates] Updated ${result.modifiedCount} events with past end dates`
+    );
 
     return NextResponse.json({
       message: `Updated ${result.modifiedCount} events with past end dates (yesterday)`,
