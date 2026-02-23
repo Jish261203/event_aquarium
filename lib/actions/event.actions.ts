@@ -48,20 +48,63 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
 
     // If organizer is not in our DB (webhook may not have run), try to fetch from Clerk and create locally
     if (!organizer) {
+      // Declare these in outer scope so catch can inspect them when creation fails
+      let cu: any = null;
+      let email: string = "";
+      let generatedUsername: string = "";
+      let firstName: string = "";
+      let lastName: string = "";
+      let photo: string = "";
+
       try {
-        const cu = await clerkClient.users.getUser(userId);
-        const email = cu.emailAddresses?.[0]?.emailAddress ?? "";
+        cu = await clerkClient.users.getUser(userId);
+        email = cu.emailAddresses?.[0]?.emailAddress || "";
+        generatedUsername =
+          cu.username ||
+          (email ? email.split("@")[0] : cu.id?.slice(0, 8) || "user");
+        firstName = cu.firstName || "User";
+        lastName = cu.lastName || "";
+        photo = cu.imageUrl || cu.profileImageUrl || "";
 
         organizer = await User.create({
           clerkId: cu.id,
           email,
-          username: cu.username ?? "",
-          firstName: cu.firstName ?? "",
-          lastName: cu.lastName ?? "",
-          photo: cu.profileImageUrl ?? cu.imageUrl ?? "",
+          username: generatedUsername,
+          firstName,
+          lastName,
+          photo,
         });
-      } catch (err) {
-        throw new Error("Organizer not found");
+      } catch (err: any) {
+        console.error("Failed to fetch/create organizer from Clerk:", err);
+
+        // If creation failed due to duplicate key (email/username), try to find the existing user
+        const isDuplicateKey =
+          err && (err.code === 11000 || String(err).includes("duplicate key"));
+        if (isDuplicateKey) {
+          try {
+            const existing = await User.findOne({
+              $or: [
+                { clerkId: cu?.id },
+                { email },
+                { username: generatedUsername },
+              ],
+            });
+            if (existing) {
+              organizer = existing;
+            } else {
+              throw err;
+            }
+          } catch (findErr) {
+            console.error(
+              "Error finding existing user after duplicate key:",
+              findErr,
+            );
+            throw new Error("Organizer not found or could not be created");
+          }
+        } else {
+          // Other errors are surfaced
+          throw new Error("Organizer not found or could not be created");
+        }
       }
     }
 
@@ -117,7 +160,7 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
     const updatedEvent = await Event.findByIdAndUpdate(
       event._id,
       { ...event, category: event.categoryId },
-      { new: true }
+      { new: true },
     );
     revalidatePath(path);
 

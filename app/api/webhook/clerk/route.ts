@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
-      "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
+      "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local",
     );
   }
 
@@ -60,13 +60,17 @@ export async function POST(req: Request) {
       evt.data;
 
     try {
+      const email = email_addresses[0]?.email_address || "";
+      const generatedUsername =
+        username || email.split("@")[0] || id.slice(0, 8);
+
       const user = {
         clerkId: id,
-        email: email_addresses[0].email_address,
-        username: username!,
-        firstName: first_name,
-        lastName: last_name,
-        photo: image_url,
+        email,
+        username: generatedUsername,
+        firstName: first_name || "User",
+        lastName: last_name || "",
+        photo: image_url || "",
       };
 
       console.log("[Webhook] Creating user with data:", {
@@ -82,7 +86,7 @@ export async function POST(req: Request) {
       if (newUser) {
         console.log(
           "[Webhook] Updating Clerk metadata with userId:",
-          newUser._id
+          newUser._id,
         );
         await clerkClient.users.updateUserMetadata(id, {
           publicMetadata: {
@@ -97,7 +101,7 @@ export async function POST(req: Request) {
       console.error("[Webhook] Error creating user:", error);
       return NextResponse.json(
         { message: "Error creating user", error: String(error) },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }
@@ -122,7 +126,7 @@ export async function POST(req: Request) {
       console.error("[Webhook] Error updating user:", error);
       return NextResponse.json(
         { message: "Error updating user", error: String(error) },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }
@@ -139,7 +143,7 @@ export async function POST(req: Request) {
       console.error("[Webhook] Error deleting user:", error);
       return NextResponse.json(
         { message: "Error deleting user", error: String(error) },
-        { status: 500 }
+        { status: 500 },
       );
     }
   }
