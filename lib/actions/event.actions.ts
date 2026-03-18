@@ -90,13 +90,17 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
               ],
             });
             if (existing) {
+              if (existing.clerkId !== cu?.id) {
+                existing.clerkId = cu?.id;
+                await existing.save();
+              }
               organizer = existing;
             } else {
               throw err;
             }
           } catch (findErr) {
             console.error(
-              "Error finding existing user after duplicate key:",
+              "Error finding/updating existing user after duplicate key:",
               findErr,
             );
             throw new Error("Organizer not found or could not be created");

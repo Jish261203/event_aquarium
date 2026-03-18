@@ -137,22 +137,35 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
       try {
         console.log(`[Checkout] Fetching user from Clerk: ${order.buyerId}`);
         const clerkUser = await clerkClient.users.getUser(order.buyerId);
+        const email = clerkUser.emailAddresses[0]?.emailAddress || "";
 
-        // Create user in database
-        const newUser = await User.create({
-          clerkId: clerkUser.id,
-          email: clerkUser.emailAddresses[0]?.emailAddress || "",
-          username:
-            clerkUser.username ||
-            clerkUser.emailAddresses[0]?.emailAddress?.split("@")[0] ||
-            "user",
-          firstName: clerkUser.firstName || "",
-          lastName: clerkUser.lastName || "",
-          photo: clerkUser.imageUrl || "",
-        });
+        let existingUser = null;
+        if (email) {
+          existingUser = await User.findOne({ email });
+        }
 
-        buyer = newUser;
-        console.log(`[Checkout] User auto-created in database:`, buyer._id);
+        if (existingUser) {
+          existingUser.clerkId = clerkUser.id;
+          await existingUser.save();
+          buyer = existingUser;
+          console.log(`[Checkout] Existing user updated with new Clerk ID:`, buyer._id);
+        } else {
+          // Create user in database
+          const newUser = await User.create({
+            clerkId: clerkUser.id,
+            email,
+            username:
+              clerkUser.username ||
+              email.split("@")[0] ||
+              "user",
+            firstName: clerkUser.firstName || "",
+            lastName: clerkUser.lastName || "",
+            photo: clerkUser.imageUrl || "",
+          });
+
+          buyer = newUser;
+          console.log(`[Checkout] User auto-created in database:`, buyer._id);
+        }
       } catch (clerkError) {
         console.error(`[Checkout] Failed to auto-create user:`, clerkError);
       }

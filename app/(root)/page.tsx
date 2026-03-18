@@ -7,17 +7,42 @@ import Typewriter from "./TypeEffect";
 import Search from "@/components/shared/Search";
 import { SearchParamProps } from "@/types";
 import CategoryFilter from "@/components/shared/CategoryFilter";
+import { Suspense } from "react";
+import Loader from "@/components/ui/Loader";
 
-export default async function Home({ searchParams }: SearchParamProps) {
-	const page = Number(searchParams?.page) || 1;
-	const searchText = (searchParams?.query as string) || "";
-	const category = (searchParams?.category as string) || "";
+async function EventsFetcher({
+	searchText,
+	category,
+	page,
+}: {
+	searchText: string;
+	category: string;
+	page: number;
+}) {
 	const events = await getAllEvents({
 		query: searchText,
 		category,
 		page,
 		limit: 6,
 	});
+
+	return (
+		<Collection
+			data={events?.data}
+			emptyTitle="No Events Avaliable"
+			emptyStateSubtext="Come Back Later"
+			collectionType="All_Events"
+			limit={6}
+			page={page}
+			totalPages={events?.totalPages}
+		/>
+	);
+}
+
+export default async function Home({ searchParams }: SearchParamProps) {
+	const page = Number(searchParams?.page) || 1;
+	const searchText = (searchParams?.query as string) || "";
+	const category = (searchParams?.category as string) || "";
 
 	const words = ["Build", "Connect!", "Celebrate!!"];
 
@@ -63,15 +88,12 @@ export default async function Home({ searchParams }: SearchParamProps) {
 					<Search />
 					<CategoryFilter />
 				</div>
-				<Collection
-					data={events?.data}
-					emptyTitle="No Events Avaliable"
-					emptyStateSubtext="Come Back Later"
-					collectionType="All_Events"
-					limit={6}
-					page={page}
-					totalPages={events?.totalPages}
-				/>
+				<Suspense
+					key={searchText + category + page}
+					fallback={<Loader className="min-h-[30vh]" />}
+				>
+					<EventsFetcher searchText={searchText} category={category} page={page} />
+				</Suspense>
 			</section>
 		</>
 	);

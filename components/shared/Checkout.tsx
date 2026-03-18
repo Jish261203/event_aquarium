@@ -30,17 +30,25 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
     ? "0"
     : (parseFloat(event.price || "0") * quantity).toFixed(2);
 
-  const onCheckout = async () => {
-    const order = {
-      eventTitle: event.title,
-      eventId: event._id,
-      price: totalPrice,
-      isFree: event.isFree,
-      buyerId: userId,
-      quantity: quantity,
-    };
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    await checkoutOrder(order);
+  const onCheckout = async () => {
+    setIsCheckingOut(true);
+    try {
+      const order = {
+        eventTitle: event.title,
+        eventId: event._id,
+        price: totalPrice,
+        isFree: event.isFree,
+        buyerId: userId,
+        quantity: quantity,
+      };
+
+      await checkoutOrder(order);
+    } catch (error) {
+      console.error(error);
+      setIsCheckingOut(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,9 +111,19 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
           <Button
             type="submit"
             size="lg"
-            className="button w-full bg-gradient-to-r from-purple-800 via-blue-900 to-gray-900 text-white border-blue-500 transition-all duration-300 hover:bg-gray-800 hover:text-pink-500"
+            disabled={isCheckingOut}
+            className={`button w-full bg-gradient-to-r from-purple-800 via-blue-900 to-gray-900 text-white border-blue-500 transition-all duration-300 hover:bg-gray-800 hover:text-pink-500 ${isCheckingOut ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            {event.isFree ? "Get Tickets" : "Buy Tickets"}
+            {isCheckingOut ? (
+              <span className="flex items-center gap-2">
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                Processing...
+              </span>
+            ) : event.isFree ? (
+              "Get Tickets"
+            ) : (
+              "Buy Tickets"
+            )}
           </Button>
         </div>
       </form>

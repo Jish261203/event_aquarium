@@ -21,24 +21,24 @@ const Footer: React.FC = () => {
 							role="list"
 							className="flex flex-col items-center justify-center gap-4 py-4 sm:flex-row sm:gap-8">
 							<li role="listitem">
-								<a href="/" className="hover:text-primary">
+								<Link href="/" className="hover:text-primary">
 									Home
-								</a>
+								</Link>
 							</li>
 							<li role="listitem">
-								<a href="/events/create" className="hover:text-primary">
+								<Link href="/events/create" className="hover:text-primary">
 									Create Event{" "}
-								</a>
+								</Link>
 							</li>
 							<li role="listitem">
-								<a href="/profile" className="hover:text-primary">
+								<Link href="/profile" className="hover:text-primary">
 									My profile
-								</a>
+								</Link>
 							</li>
 							<li role="listitem">
-								<a href="#" className="hover:text-primary">
+								<Link href="#" className="hover:text-primary">
 									About us
-								</a>
+								</Link>
 							</li>
 						</ul>
 						<div className="m-auto flex w-max items-center justify-between space-x-4">

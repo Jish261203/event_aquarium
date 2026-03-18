@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { neobrutalism } from "@clerk/themes";
+import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -29,7 +30,10 @@ export default function RootLayout({
 				baseTheme: neobrutalism,
 			}}>
 			<html lang="en">
-				<body className={poppins.variable}>{children}</body>
+				<body className={poppins.variable}>
+					<NextTopLoader color="#8b5cf6" showSpinner={false} />
+					{children}
+				</body>
 			</html>
 		</ClerkProvider>
 	);
